@@ -28,12 +28,14 @@ app.use(cors())
 async function main() {
     await MongoUtil.connect(process.env.MONGO_URL,"homebakers");
 
+    // CRUD for item listing
     app.post('/item_record', function (req, res) {
         let itemName = req.body.itemName;
         let itemDesc = req.body.itemDesc;
         let itemPrice = req.body.itemPrice
         let contactInfo = req.body.contactInfo
         let category = req.body.category;
+        let shopName =req.body.shopName
         console.log(req.body);
         if (!category){
             category = [];
@@ -47,7 +49,8 @@ async function main() {
             'itemDesc': itemDesc,
             'itemPrice': itemPrice,
             'contactInfo': contactInfo,
-            'category': category
+            'category': category,
+            'shopName': shopName
         })
         res.status(200);
         res.json({
@@ -55,6 +58,7 @@ async function main() {
         })
     });
     
+    // show all the item listing
     app.get('/item_record', async function(req,res){
         let db = MongoUtil.getDB();
         let results = await db.collection('listings').find({}).toArray();
@@ -62,31 +66,59 @@ async function main() {
     })
 
 
-    // Edit item listing
+    // Update item listing
     app.put('item_record/:itemId', async function (req, res) {
+
         let db = MongoUtil.getDB();
-        let results = await db.collection('food').updateOne({
+        let results = await db.collection('listings').updateOne({
             '_id':ObjectId(req.params.itemId)
         }, {
             '$set': {
-                'itemName': itemName,
-                'itemDesc': itemDesc,
-                'itemPrice': itemPrice,
-                'contactInfo': contactInfo,
-                'category': category
+                'itemName': req.body.itemName,
+                'itemDesc': req.body.itemDesc,
+                'itemPrice': req.body.itemPrice,
+                'contactInfo': req.body.contactInfo,
+                'category': req.body.category,
+                'shopName': shopName
             }
         })
         res.json(results);
-        res.redirect('/item_record')
+        // res.redirect('/item_record')
     })
-
+    // Delete item listing
     app.delete('/item_record/:itemId', async function(req,res){
         let db = MongoUtil.getDB();
-        let results = await db.collection('listing').deleteOne({
+        let results = await db.collection('listings').deleteOne({
             "_id": ObjectId(req.params.itemId)
         })
         res.json(results);
-        res.redirect('/item_record')
+    })
+
+
+
+
+
+    // search engines
+    app.get('/item_record/search', async function(req,res){
+        let critera = {};
+        // search by item description
+        if (req.query.itemDesc) {
+            // add to the critera object a key 'description' 
+            critera['itemDesc'] =  {$regex: req.query.itemDesc, $options:'i'};
+        }
+        // search by item name
+        if (req.query.itemName) {
+            critera['itemName'] = {$regex: req.query.itemName, $options:'i'}
+        }
+        // search by shop
+        if (req.query.shopName) {
+            critera['shopName'] = {$regex: req.query.shopName, $options:'i'}
+        }
+
+        console.log(critera);
+        let db = MongoUtil.getDB();
+        let results = await db.collection('listings').find(critera).toArray();
+        res.json(results);
     })
 
 
