@@ -34,6 +34,7 @@ async function main() {
         let itemDesc = req.body.itemDesc;
         let itemPrice = req.body.itemPrice
         let contactInfo = req.body.contactInfo
+        let bundleDeal = req.body.bundleDeal
         let category = req.body.category;
         let shopName =req.body.shopName
         console.log(req.body);
@@ -49,6 +50,7 @@ async function main() {
             'itemDesc': itemDesc,
             'itemPrice': itemPrice,
             'contactInfo': contactInfo,
+            'bundleDeal': bundleDeal,
             'category': category,
             'shopName': shopName
         })
@@ -59,7 +61,7 @@ async function main() {
     });
     
     // show all the item listing
-    app.get('/item_record', async function(req,res){
+    app.get('/', async function(req,res){
         let db = MongoUtil.getDB();
         let results = await db.collection('listings').find({}).toArray();
         res.json(results);
@@ -78,6 +80,7 @@ async function main() {
                 'itemDesc': req.body.itemDesc,
                 'itemPrice': req.body.itemPrice,
                 'contactInfo': req.body.contactInfo,
+                'bundleDeal': req.body.bundleDeal,
                 'category': req.body.category,
                 'shopName': shopName
             }
@@ -114,6 +117,10 @@ async function main() {
         if (req.query.shopName) {
             critera['shopName'] = {$regex: req.query.shopName, $options:'i'}
         }
+        // search by presence of bundle deal
+        if (req.query.bundleDeal) {
+            critera['bundleDeal'] = {$regex: req.query.bundleDeal, $options:'i'}
+        }
 
         console.log(critera);
         let db = MongoUtil.getDB();
@@ -147,7 +154,7 @@ async function main() {
     //             }
     //         }
     //     })
-    //     res.redirect('/item_record')
+    //     res.redirect('/item_record/:item')
     // })
 }
 main();
