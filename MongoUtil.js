@@ -13,6 +13,7 @@ async function connect(url, dbname) {
 
 function getDB() {
     return _db;
+
 }
 
 // allows other JavaScript files to be able to call the conenct and getDB function

@@ -1,5 +1,5 @@
 // Set up express
-const { response } = require('express')
+// const {response } = require('express')
 const cors = require("cors")
 const express = require('express')
 const MongoUtil = require('./MongoUtil');
@@ -12,8 +12,6 @@ let app = express();
 // app.set('view engine', 'hbs')
 
 
-// define static images in images folder
-app.use(express.static('images'))
 // // set up wax on 
 
 // app.use(express.urlencoded({
@@ -26,15 +24,19 @@ app.use(cors())
 // ROUTES
 
 async function main() {
-    await MongoUtil.connect(process.env.MONGO_URL,"homebakers");
+   
 
     // CRUD for item listing
-    app.post('/item_record', function (req, res) {
+    await MongoUtil.connect(process.env.MONGO_URL,"homebakers");
+    
+    app.post('/item_record', async function (req, res) {
+        let results = await MongoUtil.connect(process.env.MONGO_URL,"homebakers");
         let itemName = req.body.itemName;
         let itemDesc = req.body.itemDesc;
         let itemPrice = req.body.itemPrice
         let contactInfo = req.body.contactInfo
         let bundleDeal = req.body.bundleDeal
+        let delivery = req.body.delivery
         let category = req.body.category;
         let shopName =req.body.shopName
         console.log(req.body);
@@ -51,19 +53,22 @@ async function main() {
             'itemPrice': itemPrice,
             'contactInfo': contactInfo,
             'bundleDeal': bundleDeal,
+            'delivery': delivery,
             'category': category,
             'shopName': shopName
         })
-        res.status(200);
-        res.json({
-            'insertedId': result.insertedID
-        })
+        // res.status(200);
+        // res.json({
+        //     'insertedId': result.insertedID
+        // })
+        res.json(results.ops)
     });
     
     // show all the item listing
-    app.get('/', async function(req,res){
+    app.get('/item_record', async function(req,res){
         let db = MongoUtil.getDB();
         let results = await db.collection('listings').find({}).toArray();
+        
         res.json(results);
     })
 
@@ -81,8 +86,9 @@ async function main() {
                 'itemPrice': req.body.itemPrice,
                 'contactInfo': req.body.contactInfo,
                 'bundleDeal': req.body.bundleDeal,
+                'delivery': req.body.delivery,
                 'category': req.body.category,
-                'shopName': shopName
+                'shopName': req.body.shopName
             }
         })
         res.json(results);
@@ -160,7 +166,7 @@ async function main() {
 main();
 
 // START SERVER
-app.listen(3000, () => {
+app.listen(8080, () => {
     console.log("Server started")
 })
 
