@@ -43,7 +43,7 @@ To sellers, they no longer need to fret about the cost of curating their own per
 
 A live demo can be found here https://denise06.github.io/assignment1_maps/. 
 
-![Overview of Project in different devices](https://github.com/denise06/assignment1_maps/blob/main/images/Demo.png)
+![Overview of Project in different devices](images/Demo.png)
 
 
 
