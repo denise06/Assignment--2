@@ -41,7 +41,8 @@ To sellers, they no longer need to fret about the cost of curating their own per
 
 ## Demo
 
-A live demo can be found here https://denise06.github.io/assignment1_maps/. 
+A live demo can be found here https://csb-q9s1o.netlify.app/
+Git Pod
 
 ![Overview of Project in different devices](images/Demo.png)
 
@@ -99,10 +100,12 @@ Manual Testing is done to ensure that the all functions are functional.
 
 ## Deployment
 
-This site is hosted using GitHub pages, deployed directly from the master branch. 
-The deployed site will update automatically upon new commits to the master branch. In order for the site to deploy correctly on GitHub pages, the landing page must be named index.html.
-To run locally, you may click on the following link (https://denise06.github.io/assignment1_maps/)   into your terminal. 
-To cut ties with this GitHub repository, type.git remote rm origin.into the terminal.
+Backend API is deployed using Heroku while front end APP is deployed using netlify 
+The deployed site will update automatically update the database. 
+
+Heroku link: https://dcyx-tgc-assignment2.herokuapp.com/item_record![image](https://user-images.githubusercontent.com/43426431/134777033-01c46a98-f980-42f6-9db5-be6e87f58d71.png)
+Vue App Link: https://csb-q9s1o.netlify.app/
+
 
 ## Credits
 
