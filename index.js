@@ -71,7 +71,21 @@ async function main() {
     })
 
     // Find particular item
-    
+    app.get('/item_record/view/:itemId', async function(req,res){
+        let db = MongoUtil.getDB();
+        let results = await db.collection('listings').findOne({
+            'listings_id':ObjectId(req.params.itemId)
+        }, {
+            'projection': {
+                'listings':{
+                    '$elemMatch':{
+                        '_id':ObjectId(req.params.itemId)
+                    }
+                }
+            }
+        })
+        res.json(results);
+    })
 
     // Update item listing
     app.put('item_record/:itemId', async function (req, res) {
@@ -142,11 +156,14 @@ async function main() {
 }
 main();
 
-// START SERVER
-app.listen(8080, () => {
+// // START SERVER
+// app.listen(8080, () => {
+//     console.log("Server started")
+// })
+
+app.listen(3000, ()=>{
     console.log("Server started")
 })
-
 
 
 
