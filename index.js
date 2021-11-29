@@ -5,11 +5,9 @@ const express = require('express')
 const MongoUtil = require('./MongoUtil');
 const ObjectId = require('mongodb').ObjectId;
 
-// setup environmental variables to store the mongo connection string
 require('dotenv').config();
 
 let app = express();
-// app.set('view engine', 'hbs')
 
 
 // // set up wax on 
@@ -72,6 +70,8 @@ async function main() {
         res.json(results);
     })
 
+    // Find particular item
+    
 
     // Update item listing
     app.put('item_record/:itemId', async function (req, res) {
@@ -127,6 +127,11 @@ async function main() {
         if (req.query.bundleDeal) {
             critera['bundleDeal'] = {$regex: req.query.bundleDeal, $options:'i'}
         }
+        // search by itemPrice
+        if (req.query.itemPrice) {
+            const price = parseFloat(req.query.itemPrice);
+            criteria['itemPrice'] = {$lte: itemPrice}
+        }
 
         console.log(critera);
         let db = MongoUtil.getDB();
@@ -134,34 +139,6 @@ async function main() {
         res.json(results);
     })
 
-
-    // // Adding review to an item page (subdoc)
-    // app.get('/item_record/:itemID/reviews/add', async function (req, res) {
-    //     let db = MongoUtil.getDB();
-    //     let itemDetails = await db.collection('listings').findOne({
-    //         '_id': ObjectId(req.params.id)
-    //     })
-    //     res.render('add_review', {
-    //         'item': itemDetails
-    //     })
-    // })
-
-    // app.post('/item_record/:item/reviews/add', async function (req, res) {
-    //     let db = MongoUtil.getDB();
-    //     let reviewContent = req.body.content;
-    //     let id = req.params.id;
-    //     let response = await db.collection('homebakers').updateOne({
-    //         '_id': ObjectId(id)
-    //     }, {
-    //         '$push': {
-    //             'notes': {
-    //                 '_id': ObjectId(),
-    //                 'review': reviewContent
-    //             }
-    //         }
-    //     })
-    //     res.redirect('/item_record/:item')
-    // })
 }
 main();
 
